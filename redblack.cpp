@@ -62,12 +62,13 @@ void RBTree::swapValues(Node *u, Node *v)
 }
 
 // fix red red at given node
-void RBTree::fixRedRed(Node *x)
+void RBTree::fixRedRed(Node *x) //modified to fix red red red insteadeadead
 {
     // if x is root color it black and return
+    //NOTE: this is the first relaxation!
     if (x == root)
     {
-        x->color = BLACK;
+        //x->color = BLACK;
         return;
     }
 
@@ -75,7 +76,7 @@ void RBTree::fixRedRed(Node *x)
     Node *parent = x->parent, *grandparent = parent->parent,
          *uncle = x->uncle();
 
-    if (parent->color != BLACK)
+    if (parent->color != BLACK && (grandparent != NULL && grandparent != BLACK ) ) //three reds in a row -> no good 
     {
         if (uncle != NULL && uncle->color == RED)
         {
@@ -103,7 +104,7 @@ void RBTree::fixRedRed(Node *x)
                 // for left left and left right
                 rightRotate(grandparent);
             }
-            else
+            else //parent is on right
             {
                 if (x->isOnLeft())
                 {
@@ -111,7 +112,7 @@ void RBTree::fixRedRed(Node *x)
                     rightRotate(parent);
                     swapColors(x, grandparent);
                 }
-                else
+                else //i am a right child
                 {
                     swapColors(parent, grandparent);
                 }
@@ -121,7 +122,7 @@ void RBTree::fixRedRed(Node *x)
             }
         }
     }
-}
+} //fix red red
 
 // find node that do not have a left child
 // in the subtree of the given node
