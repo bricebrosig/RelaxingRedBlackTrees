@@ -62,63 +62,215 @@ void mod_RBTree::swapValues(Node *u, Node *v)
 }
 
 // fix red red at given node
-void mod_RBTree::fixRedRed(Node *x) //modified to fix red red red instead ead ead 
+void mod_RBTree::fixRedRedRed(Node *x) //modified to fix red red red instead ead ead 
 {
     // if x is root color it black and return
-    //NOTE: this is the first relaxation!
+    //NOTE: Even though this relaxation allows for a red head node, my algorithm requires that the initial node be black
     if (x == root)
     {
         //x->color = BLACK;
         return;
     }
 
-    // initialize parent, grandparent, uncle
-    Node *parent = x->parent, *grandparent = parent->parent,
-         *uncle = x->uncle();
+    /*
+        CASES: (hold on... theres a lot of them)
+            1: insert red node with red parent, red grand parent, and black great grand parent
+                a: straight left
+                b: zig-zag left
+                c: straight right
+                d: zig-zag left
+            2: insert red node with red parent, red grandparent, red uncle, black great grand parent, and red great uncle
+                NOTE: these zig zags are at the newnode/ parent level
+                a: straight left
+                b: zig zag left
+                c: straight right
+                d: zig zag right
+            3: zig zag at the grandparent parent level (could call this 2e-2f... but thats a lot of case 2)
+                NOTE: these zig zags are at the parent grandparent level
+                a: grandparent is left
+                b: grandparent is right
+            4: inset red node with red parent, red grandparent, no greatgrandparent, and a black uncle
+                NOTE: this is basically when tree gets out of balance, the out of balanceness is 
+                propogated up so theres a triple red at the root and we have to rotate over,
+                This means that the tree can be kind of balanced in the long run, but it is possible that it ends unbalanced
+    */
 
-    if (parent->color != BLACK && (grandparent != NULL && grandparent->color != BLACK ) ) //three reds in a row -> no good 
+    // initialize parent, grandparent, uncle
+    Node *parent = x->parent, 
+         *grandparent = parent->parent, //get the g pa
+         *uncle = x->uncle(), //get the uncle
+         *greatGrandparent = (grandparent ? grandparent->parent : nullptr); //if the grandparent is not null, then get the parent and assign it to grandparent
+
+    if(parent->color == RED && 
+        (grandparent && grandparent->color == RED)) //three reds in a row -> no good 
     {
-        if (uncle != NULL && uncle->color == RED)
+        if(greatGrandparent) //a great grandparent exists -> case 1 or 2
         {
-            // uncle red, perform recoloring and recurse
-            parent->color = BLACK;
-            uncle->color = BLACK;
-            grandparent->color = RED;
-            fixRedRed(grandparent);
-        }
-        else
-        {
-            // Else perform LR, LL, RL, RR
-            if (parent->isOnLeft())
+            if(uncle && uncle->color == RED) //uncle exists && is red -> case 2
             {
-                if (x->isOnLeft())
+                if((grandparent && grandparent->isOnLeft())
+                    && (parent && !parent->isOnLeft())) // grandparent on left and parent on right -> case 3a
                 {
-                    // for left left
-                    swapColors(parent, grandparent);
+                    /*
+                        rotate grandparent right
+                        color uncle black
+                    */
+                    rightRotate(grandparent);
+                    uncle->color = BLACK;
+                }
+                else if((grandparent && !grandparent->isOnLeft())
+                    && (parent && parent->isOnLeft())) // grandparent on right and parent on left -> case 3b
+                {
+                    /*
+                        Rotate greatgrandparent left
+                        color uncle black
+                    */
+                    leftRotate(greatGrandparent);
+                    uncle->color = BLACK;
+                }
+                else // we are in case 2
+                {
+                    if(parent && parent->isOnLeft())
+                    {
+                        if(x->isOnLeft())
+                        {
+                            /* 
+                            left left:
+                            rotate greatgrandparent right
+                            color parent black
+                            */
+                            rightRotate(greatGrandparent);
+                            parent->color = BLACK;
+
+                        }
+                        else //x is on right
+                        {
+                            /* 
+                                left right: 
+                                rotate parent left
+                                color x black
+                                rotate greatgrandparent right
+                            */
+                            leftRotate(parent);
+                            x->color = BLACK;
+                            rightRotate(greatGrandparent);
+                        }
+                        
+                    }
+                    else //parent is on right
+                    {
+                        if(x->isOnLeft())
+                        {
+                            /* 
+                                right left
+                                rotate parent right
+                                color x black
+                                rotate greatgrandparent left
+                            */
+                            rightRotate(parent);
+                            x->color = BLACK;
+                            leftRotate(greatGrandparent);
+                        }
+                        else //x is on right
+                        {
+                            /* 
+                                right right 
+                                rotate greatgrandparent left
+                                color parent black
+                            */
+                            leftRotate(greatGrandparent);
+                            parent->color = BLACK;
+                        }
+                    }
+                }
+            }
+            else //no red uncle -> case 1
+            {
+                if(parent && parent->isOnLeft())
+                {
+                    if(x->isOnLeft())
+                    {
+                        /* 
+                            left left case 
+                            rotate grandparent right
+                        */
+                        rightRotate(grandparent);
+                    }
+                    else //x is on right
+                    {
+                        /* 
+                            left right case 
+                            rotate parent left
+                            rotate grandparent right
+                        */
+                        leftRotate(parent);
+                        rightRotate(grandparent);
+                    }
+                    
+                }
+                else //parent is on right
+                {
+                    if(x->isOnLeft())
+                    {
+                        /* 
+                            right left case 
+                            rotate parent right
+                            rotate grandparent left
+                        */
+                        rightRotate(parent);
+                        leftRotate(grandparent);
+                    }
+                    else //x is on right
+                    {
+                        /* 
+                            right right case
+                            rotate grandparent left
+                        */
+                        leftRotate(grandparent);
+                    }
+                }
+            }
+            
+            fixRedRedRed(grandparent); // see if we propogated enough up that we need to roll over the root
+        } //if greatgrandparent
+        else // no greatgrandparent -> case 4
+        {
+            if(parent && parent->isOnLeft())
+            {
+                if(x->isOnLeft())
+                {
+                    //left left
+                    rightRotate(grandparent);
+                    grandparent->color = BLACK;
+                    uncle->color = RED;
                 }
                 else
                 {
+                    //left right
                     leftRotate(parent);
-                    swapColors(x, grandparent);
+                    rightRotate(grandparent);
+                    grandparent->color = BLACK;
+                    uncle->color = RED;
                 }
-                // for left left and left right
-                rightRotate(grandparent);
+                
             }
-            else //parent is on right
+            else
             {
-                if (x->isOnLeft())
+                if(x->isOnLeft())
                 {
-                    // for right left
+                    //right left
                     rightRotate(parent);
-                    swapColors(x, grandparent);
+                    leftRotate(grandparent);
+                    grandparent->color = BLACK;
+                    uncle->color = RED;
                 }
-                else //i am a right child
+                else
                 {
-                    swapColors(parent, grandparent);
+                    //right right
+                    leftRotate(grandparent);
+                    grandparent->color = BLACK;
+                    uncle->color = RED;
                 }
-
-                // for right right and right left
-                leftRotate(grandparent);
             }
         }
     } //if three reds
@@ -210,6 +362,7 @@ Node *mod_RBTree::search(int n)
 }
 
 // inserts the given value to tree
+//TODO: Force the first node to be black
 void mod_RBTree::insert(int n)
 {
     Node *newNode = new Node(n);
@@ -242,7 +395,7 @@ void mod_RBTree::insert(int n)
             temp->right = newNode;
 
         // fix red red voilaton if exists
-        fixRedRed(newNode);
+        fixRedRedRed(newNode);
     }
 }
 
