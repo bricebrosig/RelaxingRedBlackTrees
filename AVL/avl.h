@@ -1,6 +1,8 @@
 // C++ program to insert a node in AVL tree  
 //#include <bits/stdc++.h>
 #include <iostream>
+#include "stdlib.h"
+#include <memory>
 using namespace std; 
   
 // An AVL tree node  

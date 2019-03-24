@@ -136,24 +136,6 @@ Node *mod_RBTree::successor(Node *x)
     return temp;
 }
 
-// find node that replaces a deleted node in BST
-Node *mod_RBTree::BSTreplace(Node *x)
-{
-    // when node have 2 children
-    if (x->left != NULL && x->right != NULL)
-        return successor(x->right);
-
-    // when leaf
-    if (x->left == NULL && x->right == NULL)
-        return NULL;
-
-    // when single child
-    if (x->left != NULL)
-        return x->left;
-    else
-        return x->right;
-}
-
 // prints level order for given node
 void mod_RBTree::levelOrder(Node *x)
 {

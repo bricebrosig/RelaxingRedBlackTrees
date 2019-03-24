@@ -13,7 +13,6 @@ class mod_RBTree
   void swapValues(Node *u, Node *v);
   void fixRedRed(Node *x);   // fix red red at given node
   Node *successor(Node *x);  // in the subtree of the given node find node that do not have a left child
-  Node *BSTreplace(Node *x); // find node that replaces a deleted node in BST
   void levelOrder(Node *x); // prints level order for given node
   void inorder(Node *x);    // prints inorder recursively
 

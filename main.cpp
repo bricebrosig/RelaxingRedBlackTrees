@@ -8,6 +8,9 @@ int main()
   /*
   Modifed RB Tree
   */
+
+  std::cout << "/*\n\t==modified RBTree==\n*/ " << std::endl;
+  
   mod_RBTree tree;
 
   tree.insert(7);
@@ -25,12 +28,11 @@ int main()
   tree.printInOrder();
   tree.printLevelOrder();
 
-  tree.printInOrder();
-  tree.printLevelOrder();
-
   /*
   AVL TREE STUFF BELOW
   */
+
+  std::cout << "/*\n\t==Normal AVL tree==\n*/ " << std::endl;
 
   avl_Node *root = NULL;
   root = insert(root, 10);
@@ -44,9 +46,13 @@ int main()
                "constructed AVL tree is \n";
   preOrder(root);
 
+  std::cout << std::endl;
+
   /*
-  Normal RBTree stuff below
+    Normal BST
   */
+
+  std::cout << "/*\n\t==Normal RBTree==\n*/ " << std::endl;
 
   RBTree rb;
 
@@ -62,11 +68,8 @@ int main()
   rb.insert(6);
   rb.insert(13);
 
+  
   rb.printInOrder();
   rb.printLevelOrder();
-
-  rb.printInOrder();
-  rb.printLevelOrder();
-
   return 0;
 }
