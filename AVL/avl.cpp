@@ -148,41 +148,10 @@ avl_Node* insert(avl_Node* node, int key)
 // of every node  
 void preOrder(avl_Node *root)  
 {  
-    if(root != NULL)  
+    if(root)  
     {  
         cout << root->key << " ";  
         preOrder(root->left);  
         preOrder(root->right);  
     }  
 } 
-
-/* Driver Code
-
-change the Node to avl_Node
-int main()  
-{  
-    Node *root = NULL;  
-      
-    /* Constructing tree given in  
-    the above figure 
-    root = insert(root, 10);  
-    root = insert(root, 20);  
-    root = insert(root, 30);  
-    root = insert(root, 40);  
-    root = insert(root, 50);  
-    root = insert(root, 25);  
-      
-    /* The constructed AVL Tree would be  
-                30  
-            / \  
-            20 40  
-            / \ \  
-        10 25 50  
-    
-    cout << "Preorder traversal of the "
-            "constructed AVL tree is \n";  
-    preOrder(root);  
-      
-    return 0;  
-}
-*/

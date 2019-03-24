@@ -16,7 +16,7 @@ Node::Node(int val) : val(val)
 Node *Node::uncle()
 {
     // If no parent or grandparent, then no uncle
-    if (parent == NULL or parent->parent == NULL)
+    if (parent == NULL || parent->parent == NULL)
         return NULL;
 
     if (parent->isOnLeft())
@@ -60,6 +60,6 @@ void Node::moveDown(Node *nParent)
 
 bool Node::hasRedChild()
 {
-    return (left != NULL and left->color == RED) or
-           (right != NULL and right->color == RED);
+    return (left != NULL && left->color == RED) ||
+           (right != NULL && right->color == RED);
 }

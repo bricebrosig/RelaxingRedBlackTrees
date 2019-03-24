@@ -1,7 +1,7 @@
-#include "redblack.h"
+#include "m_redblack.h"
 using namespace std;
 
-void RBTree::leftRotate(Node *x)
+void mod_RBTree::leftRotate(Node *x)
 {
     // new parent will be node's right child
     Node *nParent = x->right;
@@ -23,7 +23,7 @@ void RBTree::leftRotate(Node *x)
     nParent->left = x;
 }
 
-void RBTree::rightRotate(Node *x)
+void mod_RBTree::rightRotate(Node *x)
 {
     // new parent will be node's left child
     Node *nParent = x->left;
@@ -45,7 +45,7 @@ void RBTree::rightRotate(Node *x)
     nParent->right = x;
 }
 
-void RBTree::swapColors(Node *x1, Node *x2)
+void mod_RBTree::swapColors(Node *x1, Node *x2)
 {
     COLOR temp;
     temp = x1->color;
@@ -53,7 +53,7 @@ void RBTree::swapColors(Node *x1, Node *x2)
     x2->color = temp;
 }
 
-void RBTree::swapValues(Node *u, Node *v)
+void mod_RBTree::swapValues(Node *u, Node *v)
 {
     int temp;
     temp = u->val;
@@ -62,7 +62,7 @@ void RBTree::swapValues(Node *u, Node *v)
 }
 
 // fix red red at given node
-void RBTree::fixRedRed(Node *x) //modified to fix red red red instead ead ead 
+void mod_RBTree::fixRedRed(Node *x) //modified to fix red red red instead ead ead 
 {
     // if x is root color it black and return
     //NOTE: this is the first relaxation!
@@ -126,7 +126,7 @@ void RBTree::fixRedRed(Node *x) //modified to fix red red red instead ead ead
 
 // find node that do not have a left child
 // in the subtree of the given node
-Node *RBTree::successor(Node *x)
+Node *mod_RBTree::successor(Node *x)
 {
     Node *temp = x;
 
@@ -137,7 +137,7 @@ Node *RBTree::successor(Node *x)
 }
 
 // find node that replaces a deleted node in BST
-Node *RBTree::BSTreplace(Node *x)
+Node *mod_RBTree::BSTreplace(Node *x)
 {
     // when node have 2 children
     if (x->left != NULL && x->right != NULL)
@@ -154,183 +154,8 @@ Node *RBTree::BSTreplace(Node *x)
         return x->right;
 }
 
-// deletes the given node
-void RBTree::deleteNode(Node *v)
-{
-    Node *u = BSTreplace(v);
-
-    // True when u and v are both black
-    bool uvBlack = ((u == NULL || u->color == BLACK) && (v->color == BLACK));
-    Node *parent = v->parent;
-
-    if (u == NULL)
-    {
-        // u is NULL therefore v is leaf
-        if (v == root)
-        {
-            // v is root, making root null
-            root = NULL;
-        }
-        else
-        {
-            if (uvBlack)
-            {
-                // u and v both black
-                // v is leaf, fix double black at v
-                fixDoubleBlack(v);
-            }
-            else
-            {
-                // u or v is red
-                if (v->sibling() != NULL)
-                    // sibling is not null, make it red"
-                    v->sibling()->color = RED;
-            }
-
-            // delete v from the tree
-            if (v->isOnLeft())
-            {
-                parent->left = NULL;
-            }
-            else
-            {
-                parent->right = NULL;
-            }
-        }
-        delete v;
-        return;
-    }
-
-    if (v->left == NULL || v->right == NULL)
-    {
-        // v has 1 child
-        if (v == root)
-        {
-            // v is root, assign the value of u to v, and delete u
-            v->val = u->val;
-            v->left = v->right = NULL;
-            delete u;
-        }
-        else
-        {
-            // Detach v from tree and move u up
-            if (v->isOnLeft())
-            {
-                parent->left = u;
-            }
-            else
-            {
-                parent->right = u;
-            }
-            delete v;
-            u->parent = parent;
-            if (uvBlack)
-            {
-                // u and v both black, fix double black at u
-                fixDoubleBlack(u);
-            }
-            else
-            {
-                // u or v red, color u black
-                u->color = BLACK;
-            }
-        }
-        return;
-    }
-
-    // v has 2 children, swap values with successor and recurse
-    swapValues(u, v);
-    deleteNode(u);
-}
-
-void RBTree::fixDoubleBlack(Node *x)
-{
-    if (x == root)
-        // Reached root
-        return;
-
-    Node *sibling = x->sibling(), *parent = x->parent;
-    if (sibling == NULL)
-    {
-        // No sibiling, double black pushed up
-        fixDoubleBlack(parent);
-    }
-    else
-    {
-        if (sibling->color == RED)
-        {
-            // Sibling red
-            parent->color = RED;
-            sibling->color = BLACK;
-            if (sibling->isOnLeft())
-            {
-                // left case
-                rightRotate(parent);
-            }
-            else
-            {
-                // right case
-                leftRotate(parent);
-            }
-            fixDoubleBlack(x);
-        }
-        else
-        {
-            // Sibling black
-            if (sibling->hasRedChild())
-            {
-                // at least 1 red children
-                if (sibling->left != NULL && sibling->left->color == RED)
-                {
-                    if (sibling->isOnLeft())
-                    {
-                        // left left
-                        sibling->left->color = sibling->color;
-                        sibling->color = parent->color;
-                        rightRotate(parent);
-                    }
-                    else
-                    {
-                        // right left
-                        sibling->left->color = parent->color;
-                        rightRotate(sibling);
-                        leftRotate(parent);
-                    }
-                }
-                else
-                {
-                    if (sibling->isOnLeft())
-                    {
-                        // left right
-                        sibling->right->color = parent->color;
-                        leftRotate(sibling);
-                        rightRotate(parent);
-                    }
-                    else
-                    {
-                        // right right
-                        sibling->right->color = sibling->color;
-                        sibling->color = parent->color;
-                        leftRotate(parent);
-                    }
-                }
-                parent->color = BLACK;
-            }
-            else
-            {
-                // 2 black children
-                sibling->color = RED;
-                if (parent->color == BLACK)
-                    fixDoubleBlack(parent);
-                else
-                    parent->color = BLACK;
-            }
-        }
-    }
-}
-
 // prints level order for given node
-void RBTree::levelOrder(Node *x)
+void mod_RBTree::levelOrder(Node *x)
 {
     if (x == NULL)
         // return if node is null
@@ -362,7 +187,7 @@ void RBTree::levelOrder(Node *x)
 }
 
 // prints inorder recursively
-void RBTree::inorder(Node *x)
+void mod_RBTree::inorder(Node *x)
 {
     if (x == NULL)
         return;
@@ -374,7 +199,7 @@ void RBTree::inorder(Node *x)
 // searches for given value
 // if found returns the node (used for delete)
 // else returns the last node while traversing (used in insert)
-Node *RBTree::search(int n)
+Node *mod_RBTree::search(int n)
 {
     Node *temp = root;
     while (temp != NULL)
@@ -403,7 +228,7 @@ Node *RBTree::search(int n)
 }
 
 // inserts the given value to tree
-void RBTree::insert(int n)
+void mod_RBTree::insert(int n)
 {
     Node *newNode = new Node(n);
     if (root == NULL)
@@ -439,26 +264,8 @@ void RBTree::insert(int n)
     }
 }
 
-// utility function that deletes the node with given value
-void RBTree::deleteByVal(int n)
-{
-    if (root == NULL)
-        // Tree is empty
-        return;
-
-    Node *v = search(n); //, *u;
-
-    if (v->val != n)
-    {
-        cout << "No node found to delete with value:" << n << endl;
-        return;
-    }
-
-    deleteNode(v);
-}
-
 // prints inorder of the tree
-void RBTree::printInOrder()
+void mod_RBTree::printInOrder()
 {
     cout << "Inorder: " << endl;
     if (root == NULL)
@@ -469,7 +276,7 @@ void RBTree::printInOrder()
 }
 
 // prints level order of the tree
-void RBTree::printLevelOrder()
+void mod_RBTree::printLevelOrder()
 {
     cout << "Level order: " << endl;
     if (root == NULL)

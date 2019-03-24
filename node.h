@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#pragma once
 using namespace std;
 
 enum COLOR { RED, BLACK };
