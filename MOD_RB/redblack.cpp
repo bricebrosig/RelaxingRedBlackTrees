@@ -446,7 +446,7 @@ void RBTree::deleteByVal(int n)
         // Tree is empty
         return;
 
-    Node *v = search(n), *u;
+    Node *v = search(n); //, *u;
 
     if (v->val != n)
     {
