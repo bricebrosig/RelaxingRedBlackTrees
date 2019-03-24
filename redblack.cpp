@@ -62,7 +62,7 @@ void RBTree::swapValues(Node *u, Node *v)
 }
 
 // fix red red at given node
-void RBTree::fixRedRed(Node *x) //modified to fix red red red insteadeadead
+void RBTree::fixRedRed(Node *x) //modified to fix red red red instead ead ead 
 {
     // if x is root color it black and return
     //NOTE: this is the first relaxation!
@@ -76,7 +76,7 @@ void RBTree::fixRedRed(Node *x) //modified to fix red red red insteadeadead
     Node *parent = x->parent, *grandparent = parent->parent,
          *uncle = x->uncle();
 
-    if (parent->color != BLACK && (grandparent != NULL && grandparent != BLACK ) ) //three reds in a row -> no good 
+    if (parent->color != BLACK && (grandparent != NULL && grandparent->color != BLACK ) ) //three reds in a row -> no good 
     {
         if (uncle != NULL && uncle->color == RED)
         {
@@ -93,7 +93,7 @@ void RBTree::fixRedRed(Node *x) //modified to fix red red red insteadeadead
             {
                 if (x->isOnLeft())
                 {
-                    // for left right
+                    // for left left
                     swapColors(parent, grandparent);
                 }
                 else
@@ -121,7 +121,7 @@ void RBTree::fixRedRed(Node *x) //modified to fix red red red insteadeadead
                 leftRotate(grandparent);
             }
         }
-    }
+    } //if three reds
 } //fix red red
 
 // find node that do not have a left child
@@ -140,11 +140,11 @@ Node *RBTree::successor(Node *x)
 Node *RBTree::BSTreplace(Node *x)
 {
     // when node have 2 children
-    if (x->left != NULL and x->right != NULL)
+    if (x->left != NULL && x->right != NULL)
         return successor(x->right);
 
     // when leaf
-    if (x->left == NULL and x->right == NULL)
+    if (x->left == NULL && x->right == NULL)
         return NULL;
 
     // when single child
@@ -160,7 +160,7 @@ void RBTree::deleteNode(Node *v)
     Node *u = BSTreplace(v);
 
     // True when u and v are both black
-    bool uvBlack = ((u == NULL or u->color == BLACK) and (v->color == BLACK));
+    bool uvBlack = ((u == NULL || u->color == BLACK) && (v->color == BLACK));
     Node *parent = v->parent;
 
     if (u == NULL)
@@ -201,7 +201,7 @@ void RBTree::deleteNode(Node *v)
         return;
     }
 
-    if (v->left == NULL or v->right == NULL)
+    if (v->left == NULL || v->right == NULL)
     {
         // v has 1 child
         if (v == root)
@@ -280,7 +280,7 @@ void RBTree::fixDoubleBlack(Node *x)
             if (sibling->hasRedChild())
             {
                 // at least 1 red children
-                if (sibling->left != NULL and sibling->left->color == RED)
+                if (sibling->left != NULL && sibling->left->color == RED)
                 {
                     if (sibling->isOnLeft())
                     {
