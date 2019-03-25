@@ -1,11 +1,13 @@
 #include <iostream>
 #include "../node.h"
 #include <queue>
+#include <algorithm>
 using namespace std;
 
 class mod_RBTree
 {
   Node *root;
+  int blackHeight = 0;
 
   void leftRotate(Node *x); // left rotates the given node
   void rightRotate(Node *x);
@@ -27,5 +29,7 @@ public:
   void insert(int n);      // inserts the given value to tree
   void printInOrder();     // prints inorder of the tree
   void printLevelOrder();
+  void getBlackHeights(Node* n, int & maxBlackheight, int & tmpBlackHeight);
+  int getHeights(Node* n);
   // prints level order of the tree
 };

@@ -48,10 +48,12 @@ int getBalance(avl_Node *N);
 // Recursive function to insert a key 
 // in the subtree rooted with node and 
 // returns the new root of the subtree.  
-avl_Node* insert(avl_Node* node, int key);  
+avl_Node* avl_insert(avl_Node* node, int key);  
   
 // A utility function to print preorder  
 // traversal of the tree.  
 // The function also prints height  
 // of every node  
 void preOrder(avl_Node *root);
+
+int avl_getHeight(avl_Node *n);

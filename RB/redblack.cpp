@@ -267,3 +267,32 @@ void RBTree::printLevelOrder()
         levelOrder(root);
     cout << endl;
 }
+
+/*
+    do an in order traversal of the graph and update the max height found each time 
+    we hit the bottom 
+    the max height of the tree is stored maxBlackHeight
+*/
+void RBTree::getBlackHeights(Node* n, int & maxBlackheight, int & tmpBlackHeight)
+{
+    if(n == nullptr) {
+        tmpBlackHeight > maxBlackheight ? maxBlackheight = tmpBlackHeight : maxBlackheight = maxBlackheight;
+        tmpBlackHeight = 0;
+        return;
+    }
+    if(n->color == BLACK)
+        tmpBlackHeight++;
+    getBlackHeights(n->left, maxBlackheight, tmpBlackHeight);
+    getBlackHeights(n->right, maxBlackheight, tmpBlackHeight);
+}
+
+/*
+    Super elegant algorithm from this thread:
+    https://stackoverflow.com/questions/20037137/how-to-calculate-the-height-of-a-red-black-tree
+*/
+int RBTree::getHeights(Node* n)
+{
+    if(n == nullptr) 
+        return -1;
+    return max(getHeights(n->left), getHeights(n->right)) + 1;
+}

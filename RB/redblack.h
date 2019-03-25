@@ -3,6 +3,8 @@
 #include <queue>
 using namespace std;
 
+//TODO: get black height and height
+
 class RBTree
 {
   Node *root;
@@ -27,5 +29,7 @@ public:
   void insert(int n);      // inserts the given value to tree
   void printInOrder();     // prints inorder of the tree
   void printLevelOrder();
+  void getBlackHeights(Node* n, int & maxBlackheight, int & tmpBlackHeight);
+  int getHeights(Node* n);
   // prints level order of the tree
 };

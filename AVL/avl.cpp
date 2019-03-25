@@ -91,16 +91,16 @@ int getBalance(avl_Node *N)
 // Recursive function to insert a key 
 // in the subtree rooted with node and 
 // returns the new root of the subtree.  
-avl_Node* insert(avl_Node* node, int key)  
+avl_Node* avl_insert(avl_Node* node, int key)  
 {  
     /* 1. Perform the normal BST insertion */
     if (node == NULL)  
         return(newNode(key));  
   
     if (key < node->key)  
-        node->left = insert(node->left, key);  
+        node->left = avl_insert(node->left, key);  
     else if (key > node->key)  
-        node->right = insert(node->right, key);  
+        node->right = avl_insert(node->right, key);  
     else // Equal keys are not allowed in BST  
         return node;  
   
@@ -155,3 +155,10 @@ void preOrder(avl_Node *root)
         preOrder(root->right);  
     }  
 } 
+
+int avl_getHeight(avl_Node *n)
+{
+    if(n == nullptr) 
+        return -1;
+    return max(avl_getHeight(n->left), avl_getHeight(n->right)) + 1;
+}

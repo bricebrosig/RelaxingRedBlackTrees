@@ -1,0 +1,14 @@
+Brice Brosig
+CSCE 4110
+Assignment 1 problem 2
+
+Use the makefile to run this program! simply type make than then use ./proj2 to run the executable. This will avoid the messy compilation that is
+required for this program. 
+
+If you have any questions or any problems compiling, running, or reading this program please do not
+hesitate to email me at bricebrosig@my.unt.edu
+
+Note that the output is simply the black height, height, and run time for each algorithm. to get the data i just
+ran the program 6 times and took down the data.
+
+Thanks and have fun!
